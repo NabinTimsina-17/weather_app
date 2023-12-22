@@ -56,8 +56,9 @@ class MyHomePage extends StatefulWidget {
 
    @override
    void initState() {
-  
-     
+    httpServices = HttpService();
+    getWeatherData();     
+    super.initState();
    }
 
   @override
@@ -72,17 +73,17 @@ class MyHomePage extends StatefulWidget {
           height: 200,
           color: Colors.white,
           width: double.infinity,
-          child: const Row(
+          child: Row(
             children: [
               Column(
                 children: [
-                  Text("december 22, 2023"),
+                  const Text("december 22, 2023"),
                   Text(
-                    "",
-                    style:TextStyle(fontSize: 20),
+                    "${requiredData.temp} °C",
+                    style:const TextStyle(fontSize: 20),
                   ),
-                  Text("clear"),
-                  Text("It feels like 18°C")
+                  const Text("clear"),
+                  const Text("It feels like 18°C")
                 ],
               )
             ],

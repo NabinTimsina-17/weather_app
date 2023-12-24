@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       "${requiredData.temp} °C",
                       style: const TextStyle(fontSize: 30),
                     ),
-                    const Text("Clear"),
+                    const Text("Pokhara"),
                     const Text("It feels like 23°C"),
                   ],
                 ),

@@ -37,6 +37,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late HttpService httpServices;
   late Main requiredData;
+  late List<Weather> weatherStatus;
+
+  void getWeatherData() async{
+    Response response = await httpServices.getRequest("/weather");
+
+    WeatherModel weatherdata = WeatherModel.fromJson(response.data);
+
+    requiredData = weatherdata.main!;
+    weatherStatus = weatherdata.weather!;
+
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -45,15 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
     getWeatherData();
   }
 
-  Future<void> getWeatherData() async {
-    Response response = await httpServices.getRequest();
-    WeatherModel weatherdata = WeatherModel.fromJson(response.data);
-
-    setState(() {
-      requiredData = weatherdata.main!;
-    });
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,8 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       "${requiredData.temp} °C",
                       style: const TextStyle(fontSize: 30),
                     ),
-                    const Text("Pokhara"),
-                    const Text("It feels like 23°C"),
+                    Text(weatherStatus.first.main!),
+                    Text("It feels like ${requiredData.feelsLike}°C"),
                   ],
                 ),
               ],
@@ -88,4 +92,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-

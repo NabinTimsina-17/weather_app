@@ -84,7 +84,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     Text("It feels like ${requiredData.feelsLike}°C"),
                   ],
                 ),
-              ],
+                SizedBox(
+                      height: 200,
+                      width: 200,
+                      child: Image.network(
+                        '',
+                        scale: 0.5,
+                      ),
+            ),
+            ],
             ),
           ),
         ],

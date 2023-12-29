@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-import 'models/weather_model.dart';
+import 'models/current_weather_model.dart';
 import 'services/http_services.dart';
 
 void main() {
@@ -42,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void getWeatherData() async{
     Response response = await httpServices.getRequest("/weather");
 
-    WeatherModel weatherdata = WeatherModel.fromJson(response.data);
+    CurrentWeatherModel weatherdata = CurrentWeatherModel.fromJson(response.data);
 
     requiredData = weatherdata.main!;
     weatherStatus = weatherdata.weather!;
@@ -84,6 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     Text("It feels like ${requiredData.feelsLike}°C"),
                   ],
                 ),
+                const SizedBox(
+                      width: 90,
+                    ),
                 SizedBox(
                       height: 200,
                       width: 200,

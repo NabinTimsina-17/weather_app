@@ -42,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void getWeatherData() async{
     Response response = await httpServices.getRequest("/weather");
 
+
     CurrentWeatherModel weatherdata = CurrentWeatherModel.fromJson(response.data);
 
     requiredData = weatherdata.main!;
@@ -77,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     const Text("December 22, 2023"),
                     Text(
-                      "${requiredData.temp} °C",
+                      "${requiredData.temp}°C",
                       style: const TextStyle(fontSize: 30),
                     ),
                     Text(weatherStatus.first.main!),
@@ -91,11 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       height: 200,
                       width: 200,
                       child: Image.network(
-                        '',
+                        'http://openweathermap.org/img/wn/${weatherStatus.first.icon}@4x.png',
                         scale: 0.5,
                       ),
             ),
             ],
+
             ),
           ),
         ],

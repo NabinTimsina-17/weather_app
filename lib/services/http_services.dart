@@ -17,7 +17,7 @@ class HttpService{
     Response response = await dio!.get(endpoint!, queryParameters: {
       "lat": 28.1885407,
       "lon": 84.0322231,
-      "appid": "5ab38c588a5e81b2b76217f4052bac04",
+      "appid": "39857143a14a6e99b22ede2ca6b07b13",
       "units": "metric"
     });
     return response;

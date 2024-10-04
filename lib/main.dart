@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import 'models/current_weather_model.dart';
 import 'services/http_services.dart';
 
@@ -36,19 +36,34 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late HttpService httpServices;
-  late Main requiredData;
-  late List<Weather> weatherStatus;
+  Main? requiredData;
+  List<Weather>? weatherStatus;
+  bool isLoading = true;
+  String? errorMessage;
 
-  void getWeatherData() async{
-    Response response = await httpServices.getRequest("/weather");
+  void getWeatherData() async {
+    try {
+      Response response = await httpServices.getRequest("/weather?q=Biratnagar&appid=39857143a14a6e99b22ede2ca6b07b13");
 
-
-    CurrentWeatherModel weatherdata = CurrentWeatherModel.fromJson(response.data);
-
-    requiredData = weatherdata.main!;
-    weatherStatus = weatherdata.weather!;
-
-    setState(() {});
+      if (response.statusCode == 200) {
+        CurrentWeatherModel weatherData = CurrentWeatherModel.fromJson(response.data);
+        setState(() {
+          requiredData = weatherData.main;
+          weatherStatus = weatherData.weather;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          errorMessage = "Error: ${response.statusCode}";
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = "Failed to fetch weather data: $e";
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -58,50 +73,56 @@ class _MyHomePageState extends State<MyHomePage> {
     getWeatherData();
   }
 
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Text('Cancel'),
-        actions: const [Text("Weather")],
+        title: const Text("Weather App"),
       ),
-      body: Column(
-        children: [
-          Container(
-            height: 200,
-            color: Colors.white,
-            width: double.infinity,
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    const Text("December 22, 2023"),
-                    Text(
-                      "${requiredData.temp}°C",
-                      style: const TextStyle(fontSize: 30),
-                    ),
-                    Text(weatherStatus.first.main!),
-                    Text("It feels like ${requiredData.feelsLike}°C"),
-                  ],
-                ),
-                const SizedBox(
-                      width: 90,
-                    ),
-                SizedBox(
-                      height: 200,
-                      width: 200,
-                      child: Image.network(
-                        'http://openweathermap.org/img/wn/${weatherStatus.first.icon}@4x.png',
-                        scale: 0.5,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : errorMessage != null
+              ? Center(child: Text(errorMessage!))
+              : requiredData == null || weatherStatus == null
+                  ? const Center(child: Text("No data available"))
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(16.0),
+                            color: Colors.white,
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        DateFormat('MMMM d, yyyy').format(DateTime.now()),
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                      Text(
+                                        "${requiredData!.temp}°C",
+                                        style: const TextStyle(fontSize: 30),
+                                      ),
+                                      Text(weatherStatus!.first.main ?? 'N/A'),
+                                      Text("Feels like ${requiredData!.feelsLike}°C"),
+                                    ],
+                                  ),
+                                ),
+                                if (weatherStatus != null && weatherStatus!.isNotEmpty)
+                                  Image.network(
+                                    'http://openweathermap.org/img/wn/${weatherStatus!.first.icon}@4x.png',
+                                    width: 100,  // Set a width to control the image size
+                                    height: 100, // Set a height to control the image size
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-            ),
-            ],
-
-            ),
-          ),
-        ],
-      ),
+                    ),
     );
   }
 }
